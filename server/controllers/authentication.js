@@ -37,7 +37,7 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create a new user
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         username,
         email,
@@ -88,7 +88,10 @@ export const login = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = await generateToken({ email: existingUser.email });
+    const token = await generateToken({
+      email: existingUser.email,
+      id: existingUser.id,
+    });
 
     // Set token as cookie
     const options = {

@@ -1,17 +1,21 @@
 import express from "express";
 import dotenv from "dotenv";
-import prisma from "./db/prisma.js";
-import router from "./routers/user.js";
+import cookieParser from "cookie-parser";
+import userRouter from "./routers/user.js";
+import bookRouter from "./routers/book.js";
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
 
+//Middlewars
 app.use(express.json());
+app.use(cookieParser());
 
-app.use('/user',router)
+app.use("/user", userRouter);
+app.use("/book", bookRouter);
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
