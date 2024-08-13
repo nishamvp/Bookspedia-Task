@@ -35,3 +35,18 @@ export const createFavBooks = async (req, res) => {
     });
   }
 };
+
+export const getFavBooks = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    if (!userId) {
+      return res.status(401).json({ status: "failed", message: "Bad request" });
+    }
+    const books = await prisma.book.findMany({
+      where: {
+        userId,
+      },
+    });
+    return res.status(200).json({ status: "success", data: books });
+  } catch (error) {}
+};
