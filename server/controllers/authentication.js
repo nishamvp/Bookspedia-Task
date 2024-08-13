@@ -86,12 +86,17 @@ export const login = async (req, res) => {
         .status(401)
         .json({ status: "failed", message: "Invalid username or password" });
     }
+    // Generate access token
+    const accessToken =await generateToken(
+      { email: existingUser.email, id: existingUser.id },
+      "15m"
+    );
 
     // Generate JWT token
-    const token = await generateToken({
-      email: existingUser.email,
-      id: existingUser.id,
-    });
+    const token = await generateToken(
+      { email: existingUser.email, id: existingUser.id },
+      "7d"
+    );
 
     // Set token as cookie
     const options = {
@@ -103,7 +108,7 @@ export const login = async (req, res) => {
 
     return res
       .status(200)
-      .json({ status: "success", message: "Login successful" });
+      .json({ status: "success", message: "Login successful", token:accessToken });
   } catch (error) {
     console.error(error);
     return res
