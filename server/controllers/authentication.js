@@ -95,9 +95,8 @@ export const login = async (req, res) => {
 
     // Set token as cookie
     const options = {
-      maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "Lax",
       secure: false,
     };
     res.cookie("token", token, options);
@@ -110,5 +109,13 @@ export const login = async (req, res) => {
     return res
       .status(500)
       .json({ status: "error", message: "Internal Server Error" });
+  }
+};
+
+export const checkAuth = async (req, res) => {
+  if (req.user) {
+    res.json({ isAuthenticated: true });
+  } else {
+    res.json({ isAuthenticated: false });
   }
 };

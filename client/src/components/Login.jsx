@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { LoginAPI } from '../../helpers/api-communicator'
 import { toast } from 'react-toastify'
@@ -7,6 +7,11 @@ const Login = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const isAuth = localStorage.getItem('isAuth')
+
+  useEffect(() => {
+    isAuth ? navigate('/') : navigate('/login')
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
