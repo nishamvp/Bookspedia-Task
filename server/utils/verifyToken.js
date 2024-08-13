@@ -1,11 +1,13 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const verifyToken = async (req, res, next) => {
-  const accessToken = req.headers['access-token'] || req.cookies.token;
-  const refreshToken = req.cookies.refreshToken;
+  const accessToken = req.headers["access-token"] || req.cookies.token;
+  const refreshToken = req.cookies.token;
 
   if (!accessToken && !refreshToken) {
-    return res.status(401).json({ status: 'failed', message: 'No token provided' });
+    return res
+      .status(401)
+      .json({ status: "failed", message: "No token provided" });
   }
 
   try {
@@ -14,41 +16,30 @@ const verifyToken = async (req, res, next) => {
     req.user = decoded;
     return next();
   } catch (error) {
-    // If access token is invalid or expired
-    if (error.name === 'TokenExpiredError') {
-      // If refresh token is also not provided
-      if (!refreshToken) {
-        return res.status(401).json({ status: 'failed', message: 'Access denied. No refresh token provided' });
-      }
-      
-      try {
-        // Verify the refresh token
-        const decodedRefresh = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET);
-
-        // Generate a new access token
-        const newAccessToken = jwt.sign(
-          { email: decodedRefresh.email, id: decodedRefresh.id },
-          process.env.JWT_SECRET_KEY,
-          { expiresIn: process.env.JWT_EXPIRATION } // Adjust expiration time as needed
-        );
-
-        // Set the new access token as a cookie
-        res.cookie('token', newAccessToken, {
-          httpOnly: true,
-          sameSite: 'Lax',
-          secure: process.env.NODE_ENV === 'production',
-        });
-
-        // Attach user information to request object
-        req.user = decodedRefresh;
-        return next();
-      } catch (refreshError) {
-        return res.status(401).json({ status: 'failed', message: 'Refresh token expired or invalid' });
-      }
+    // If there is no refreshtoken
+    if (!refreshToken) {
+      return response
+        .status(401)
+        .json({ error: "Access denied. No refresh token provided" });
     }
-
-    // Handle other token verification errors
-    return res.status(401).json({ status: 'failed', message: 'Invalid access token, authorization denied' });
+    try {
+      const decodedRefresh = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_TOKEN_SECRET
+      );
+      const newAccessToken = jwt.sign(
+        { email: decodedRefresh.email },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "30m" }
+      );
+      req.user = decodedRefresh;
+      res.setHeader("access-token", newAccessToken);
+      return next();
+    } catch (error) {
+      return response
+        .status(400)
+        .json({ error: "Refresh token expired or invalid" });
+    }
   }
 };
 

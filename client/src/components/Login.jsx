@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { LoginAPI } from '../../helpers/api-communicator'
+import { LoginAPI } from '../helpers/api-communicator'
 import { toast } from 'react-toastify'
 
 const Login = () => {
@@ -16,6 +16,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const data = await LoginAPI({ email, password })
+    localStorage.setItem('access-token', data.accessToken)
     toast.success(data.message)
     navigate('/')
   }

@@ -1,6 +1,6 @@
 import prisma from "../db/prisma.js";
 import bcrypt from "bcrypt";
-import { generateToken } from "../utils/jwt.js";
+import { generateAccessToken, generateToken } from "../utils/jwt.js";
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -49,7 +49,6 @@ export const register = async (req, res) => {
       .status(201)
       .json({ status: "success", message: "User created successfully" });
   } catch (error) {
-    console.error(error);
     return res
       .status(500)
       .json({ status: "error", message: "Internal Server Error" });
@@ -82,45 +81,43 @@ export const login = async (req, res) => {
       existingUser.password
     );
     if (!isValidPassword) {
-      return res
-        .status(401)
-        .json({ status: "failed", message: "Invalid username or password" });
+      return res.status(401).json({
+        status: "failed",
+        message: "Invalid username or password",
+      });
     }
-    // Generate access token
-    const accessToken =await generateToken(
+
+    // Generate access token (short-lived)
+    const accessToken = await generateAccessToken(
       { email: existingUser.email, id: existingUser.id },
-      "15m"
+      '30m' // Access tokens are typically short-lived
     );
 
-    // Generate JWT token
+    // Generate refresh token (longer-lived)
     const token = await generateToken(
       { email: existingUser.email, id: existingUser.id },
-      "7d"
+      '7d' // Refresh tokens are typically long-lived
     );
 
-    // Set token as cookie
-    const options = {
+    // Set refresh token as a cookie
+    const cookieOptions = {
       httpOnly: true,
-      sameSite: "Lax",
-      secure: false,
+      sameSite: 'Lax',
+      secure: false, 
     };
-    res.cookie("token", token, options);
+    res.cookie('token', token, cookieOptions);
 
-    return res
-      .status(200)
-      .json({ status: "success", message: "Login successful", token:accessToken });
+    return res.status(200).json({
+      status: 'success',
+      message: 'Login successful',
+      accessToken, // Send access token in response
+    });
   } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ status: "error", message: "Internal Server Error" });
+    return res.status(500).json({
+      status: 'error',
+      message: 'Internal Server Error',
+    });
   }
 };
 
-export const checkAuth = async (req, res) => {
-  if (req.user) {
-    res.json({ isAuthenticated: true });
-  } else {
-    res.json({ isAuthenticated: false });
-  }
-};
+

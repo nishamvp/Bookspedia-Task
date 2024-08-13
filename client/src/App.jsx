@@ -4,17 +4,20 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import {Provider} from "react-redux"
 import Login from './components/Login';
 import Register from './components/Register';
 import DashBoard from './components/DashBoard';
 import BookList from './components/BookList';
 import PrivateRoute from './components/auth/PrivateRoute';
+import store from './store/store';
 
 axios.defaults.baseURL = 'http://localhost:3000';
 axios.defaults.withCredentials = true;
 
 function App() {
   return (
+    <Provider store={store}>
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -36,6 +39,7 @@ function App() {
         theme="dark"
       />
     </Router>
+    </Provider>
   );
 }
 

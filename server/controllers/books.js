@@ -1,7 +1,7 @@
 import prisma from "../db/prisma.js";
 
 export const createFavBooks = async (req, res) => {
-  const { title, author } = req.body;
+  const { title, author } = req.body.data;
   const userId = req.user?.id;
 
   try {
@@ -28,7 +28,6 @@ export const createFavBooks = async (req, res) => {
       data: newBook,
     });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       status: "error",
       message: "An error occurred while adding the book",
