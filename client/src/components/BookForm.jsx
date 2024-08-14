@@ -20,7 +20,10 @@ const BookForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2  w-full  ">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-2 p-8 m-5 w-1/3 bg-slate-50 rounded-lg   "
+    >
       <input
         type="text"
         placeholder="Book Title"

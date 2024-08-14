@@ -27,8 +27,8 @@ const DashBoard = () => {
   }, [dispatch,isSubmitForm])
 
   return (
-    <>
-    <div className=" h-screen flex justify-center items-center p-4">
+    <div className='flex gap-6 items-start justify-center'>
+    <div className=" w-3/4 flex justify-center items-center p-4 ">
       <div className="w-full max-w-4xl bg-primary p-6 rounded-lg shadow-md">
       <Link className='text-white font-medium hover:font-semibold' to={'/booklist'}>Booklist</Link>
         <h1 className="text-3xl font-bold mb-6 text-center text-white  ">My Books</h1>
@@ -42,7 +42,7 @@ const DashBoard = () => {
       </div>
     </div>
       <BookForm/>
-      </>
+      </div>
   )
 }
 

@@ -48,3 +48,23 @@ export const AddBook = async (data) => {
     toast.error(error.response.data.message);
   }
 };
+
+export const EditBook = async (id, { title, author }) => {
+  try {
+    const response = await axios.patch(
+      `/book/${id}`,
+      { title, author },
+      {
+        headers: {
+          "access-token": localStorage.getItem("access-token"),
+        },
+      }
+    );
+
+    if (response) {
+      return response.data;
+    }
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+};

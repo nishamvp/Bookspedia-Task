@@ -18,7 +18,7 @@ const verifyToken = async (req, res, next) => {
   } catch (error) {
     // If there is no refreshtoken
     if (!refreshToken) {
-      return response
+      return res
         .status(401)
         .json({ error: "Access denied. No refresh token provided" });
     }
@@ -36,7 +36,7 @@ const verifyToken = async (req, res, next) => {
       res.setHeader("access-token", newAccessToken);
       return next();
     } catch (error) {
-      return response
+      return res
         .status(400)
         .json({ error: "Refresh token expired or invalid" });
     }
