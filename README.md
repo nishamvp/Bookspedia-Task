@@ -24,11 +24,11 @@ Bookpedia-Task is a full-stack web application designed for managing a list of b
 
 1. **Clone the Repository**:
     ```bash
-    git clone https://github.com/your-username/Bookpedia-Task.git
+    git clone https://github.com/nishamvp/Bookpedia-Task.git
     ```
 2. **Navigate to the Front-end Directory**:
     ```bash
-    cd Bookpedia-Task/frontend
+    cd Bookpedia-Task/client
     ```
 3. **Install Dependencies**:
     ```bash
@@ -43,7 +43,7 @@ Bookpedia-Task is a full-stack web application designed for managing a list of b
 
 1. **Navigate to the Back-end Directory**:
     ```bash
-    cd Bookpedia-Task/backend
+    cd Bookpedia-Task/server
     ```
 2. **Install Dependencies**:
     ```bash
