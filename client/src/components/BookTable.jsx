@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-import { EditBook, getFavBooks } from '../helpers/api-communicator'
+import { DeleteBook, EditBook, getFavBooks } from '../helpers/api-communicator'
 import { useDispatch, useSelector } from 'react-redux'
 import { setBooks, setSubmitForm } from '../slices/appSlice'
 import { toast } from 'react-toastify'
@@ -11,6 +11,7 @@ const BookTable = () => {
   const books = useSelector((state) => state.app.books)
   const isSubmitForm = useSelector((state) => state.app.isSubmitForm)
   const dispatch = useDispatch()
+
   useEffect(() => {
     const getBooks = async () => {
       const response = await getFavBooks()
@@ -26,9 +27,18 @@ const BookTable = () => {
       const response = await EditBook(book?.id, editedData)
       dispatch(setBooks(response?.data))
       toast.success('Edited Successfully')
-    } else {
-      return null
     }
+    dispatch(setSubmitForm(false))
+  }
+
+  const handleDelete = async (id) => {
+    const response = await DeleteBook(id)
+    if (response) {
+      dispatch(setSubmitForm(true))
+      dispatch(setBooks(response?.data))
+      toast.success(response.message)
+    }
+    dispatch(setSubmitForm(false))
   }
 
   return (
@@ -61,7 +71,10 @@ const BookTable = () => {
                     >
                       Edit
                     </button>
-                    <button className="text-red-500 hover:underline ml-4">
+                    <button
+                      className="text-red-500 hover:underline ml-4"
+                      onClick={() => handleDelete(book?.id)}
+                    >
                       Delete
                     </button>
                   </td>

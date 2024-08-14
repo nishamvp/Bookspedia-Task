@@ -13,6 +13,18 @@ export const LoginAPI = async (user) => {
   }
 };
 
+export const RegisterAPI = async (user) => {
+  try {
+    const response = await axios.post("/user/register", user);
+
+    if (response) {
+      return response.data;
+    }
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+};
+
 export const getFavBooks = async () => {
   try {
     const response = await axios.get("/book", {
@@ -60,6 +72,22 @@ export const EditBook = async (id, { title, author }) => {
         },
       }
     );
+
+    if (response) {
+      return response.data;
+    }
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const DeleteBook = async (id) => {
+  try {
+    const response = await axios.delete(`/book/${id}`, {
+      headers: {
+        "access-token": localStorage.getItem("access-token"),
+      },
+    });
 
     if (response) {
       return response.data;

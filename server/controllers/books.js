@@ -170,9 +170,17 @@ export const deleteFavBooks = async (req, res) => {
       where: { id: bookId },
     });
 
+    // After Deleting give the Books data
+    const books = await prisma.book.findMany({
+      where: {
+        userId,
+      },
+    });
+
     return res.status(200).json({
       status: "success",
       message: "Book deleted successfully",
+      data:books
     });
   } catch (error) {
     // Log and handle errors
